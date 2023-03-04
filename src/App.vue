@@ -1,13 +1,70 @@
 <template>
+  <section
+    id="searchBox"
+    class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center hidden"
+  >
+    <button @click="toggleSearch()" class="absolute top-0 right-0 m-10">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+    <div class="w-[900px]">
+      <div>
+        <div class="relative">
+          <input
+            type="text"
+            v-model="search"
+            class="w-full py-2 px-5 rounded"
+          />
+          <button
+            @click="searchProcess()"
+            class="absolute right-0 top-1/2 -translate-y-1/2 h-full bg-indigo-500 rounded-r px-5 text-white hover:bg-indigo-400"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+      <div
+        v-if="searchData != null"
+        class="bg-white w-[900px] h-[500px] overflow-y-auto rounded mt-20"
+      >
+        <ul>
+          <li
+            v-for="result in searchData"
+            :key="result.id"
+            class="flex mb-3 p-4 rounded items-center"
+          >
+            <img
+              :src="result.image"
+              class="w-[100px] h-[150px] object-cover rounded-sm mr-3"
+            />
+            {{ result.title }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
   <nav
-    class="flex justify-between items-center px-20 py-5 fixed top-0 left-0 right-0 z-50 text-white duration-500"
+    class="flex justify-between items-center px-20 py-5 fixed top-0 left-0 right-0 z-40 text-white dark:!text-white duration-500 bg-white dark:bg-[#181d23]"
   >
     <div class="flex items-center">
       <img src="./assets/logo.png" class="w-[50px] mr-3" />
       <h3 class="text-xl font-semibold">ALOPE MOVIE</h3>
     </div>
-    <div>
-      <ul class="flex">
+    <div class="flex items-center">
+      <ul class="flex mr-10">
         <li class="mr-4">
           <a href="">Home</a>
         </li>
@@ -18,6 +75,22 @@
           <a href="">Series</a>
         </li>
       </ul>
+      <button @click="toggleSearch()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6 text-indigo-500"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+          />
+        </svg>
+      </button>
     </div>
   </nav>
   <header
@@ -74,7 +147,9 @@
       <span class="font-2xl block uppercase text-indigo-500"
         >Best TV Series</span
       >
-      <h2 class="text-5xl font-bold">World Best TV Series</h2>
+      <h2 class="text-5xl font-bold dark:text-gray-100">
+        World Best TV Series
+      </h2>
     </div>
     <div
       v-for="movie in movies"
@@ -87,7 +162,9 @@
         class="rounded-md w-full max-h-[450px] object-cover"
       />
       <div class="flex items-center mt-5 justify-between px-3">
-        <h5 class="font-semibold w-[90%]">{{ movie.title }}</h5>
+        <h5 class="font-semibold w-[90%] dark:text-gray-100">
+          {{ movie.title }}
+        </h5>
         <span class="text-indigo-500 w-[10%]">2022</span>
       </div>
       <div class="flex justify-between mt-3 px-3 pb-3">
@@ -96,7 +173,7 @@
             >HDTV</span
           >
         </div>
-        <div class="flex items-center text-sm">
+        <div class="flex items-center text-sm dark:text-gray-100">
           <span class="flex items-center mr-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -131,6 +208,28 @@
       </div>
     </div>
   </main>
+
+  <div
+    class="fixed w-[50px] h-[50px] rounded-full bg-indigo-500 z-40 bottom-0 right-0 flex items-center justify-center m-5"
+  >
+    <button class="cursor-pointer" onclick="toggleDarkMode()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-white"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+        />
+      </svg>
+    </button>
+  </div>
+
   <footer>
     <div class="container mx-auto py-10 flex justify-between items-center">
       <div class="flex items-center">
@@ -191,12 +290,16 @@ export default {
       nav.classList.toggle("shadow-md", window.scrollY > 0);
       nav.classList.toggle("!py-3", window.scrollY > 0);
       nav.classList.toggle("!px-10", window.scrollY > 0);
+      nav.classList.toggle("dark:bg-[#181d23]", window.scrollY > 0);
     });
   },
   data() {
     return {
       movies: null,
       topMovies: null,
+      search: null,
+
+      searchData: null,
     };
   },
   mounted() {
@@ -219,6 +322,18 @@ export default {
     showFilm(id) {
       const link = "https://imdb-api.com/en/API/Title/k_ye1jj0pg/" + id;
       window.open(link, "_blank");
+    },
+
+    searchProcess() {
+      const link = "https://imdb-api.com/API/Search/k_ye1jj0pg/" + this.search;
+      axios.get(link).then((response) => {
+        this.searchData = response.data.results;
+      });
+    },
+
+    toggleSearch() {
+      const searchBox = document.querySelector("#searchBox");
+      searchBox.classList.toggle("hidden");
     },
   },
 };

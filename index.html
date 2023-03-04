@@ -20,5 +20,13 @@
   <body class="bg-gray-50">
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+      const toggleDarkMode = () => {
+        const body = document.querySelector("body");
+        body.classList.toggle("dark");
+        body.classList.toggle("bg-[#181d23]");
+        body.classList.toggle("bg-gray-50");
+      };
+    </script>
   </body>
 </html>
